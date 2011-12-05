@@ -1,3 +1,5 @@
 <div class="mobileServiceMenuItem">
-	${mobileServiceInstance.title}
+	<a href="#" onclick="showService(${mobileServiceInstance.id}); return false;">
+		${mobileServiceInstance.title}
+	</a>
 </div>

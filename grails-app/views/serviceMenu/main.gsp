@@ -3,50 +3,53 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="layout" content="isnuts" />
-	<resource:tabView />
+	<gui:resources components="tabView, dialog"/>
 	<style>
 		.mobileServiceMenuItem {
 			border: 1px solid #000;
 			background-color: #eee;
-			width: 300px;
+			width: 400px;
 			margin-top: 5px;
 			margin-bottom: 5px;
-			height: 20px;
 			padding-top: 5px;
+			padding-bottom: 5px;
 			padding-left: 10px;
 			padding-right: 10px;
+			text-align: center;
+			clear: both;
+		}
+		
+		.mobileServiceMenuItem a {
+			color: #000;
+			font-weight: bold;
 		}
 	</style>
 </head>
 <body>
-	<richui:tabView id="tabView">
-		<richui:tabLabels>
-			<richui:tabLabel selected="true" title="Featured" />
-			<richui:tabLabel title="Favorites" />
-			<g:each in="${categorizedServicesList}" var="categorizedServices">
-				<richui:tabLabel title="${categorizedServices.categoryName }" />
-			</g:each>
-		</richui:tabLabels>
 
-		<richui:tabContents>
-			<richui:tabContent>
-				<g:each in="${featuredMobileServices}" var="featuredMobileService">
-					<g:render template="/serviceMenu/mobileServiceMenuItem" model="${[mobileServiceInstance:featuredMobileService.mobileServiceInstance]}"/>
+	<gui:tabView>
+	    <gui:tab label="Featured" active="true">
+			<g:each in="${featuredMobileServices}" var="featuredMobileService">
+				<g:render template="/serviceMenu/mobileServiceMenuItem" model="${[mobileServiceInstance:featuredMobileService.mobileServiceInstance]}"/>
+			</g:each>
+	    </gui:tab>
+	    <gui:tab label="Favorites">
+	    	Fav
+	    </gui:tab>
+		<g:each in="${categorizedServicesList}" var="categorizedServices">
+		    <gui:tab label="${categorizedServices.categoryName }">
+				<g:each in="${categorizedServices.services}" var="mobileServiceInstance">
+					<g:render template="/serviceMenu/mobileServiceMenuItem" model="${[mobileServiceInstance:mobileServiceInstance]}"/>
 				</g:each>
-			</richui:tabContent>
+		    </gui:tab>
+		</g:each>
+	</gui:tabView>
 
-			<richui:tabContent>
-				Favs
-			</richui:tabContent>
-
-			<g:each in="${categorizedServicesList}" var="categorizedServices">
-				<richui:tabContent>
-					<g:each in="${categorizedServices.services}" var="mobileServiceInstance">
-						<g:render template="/serviceMenu/mobileServiceMenuItem" model="${[mobileServiceInstance:mobileServiceInstance]}"/>
-					</g:each>
-				</richui:tabContent>
-			</g:each>
-		</richui:tabContents>
-	</richui:tabView>
+	
+	<script>
+		function showService(mobileServiceInstanceId) {
+			alert(mobileServiceInstanceId);
+		}
+	</script>
 </body>
 </html>

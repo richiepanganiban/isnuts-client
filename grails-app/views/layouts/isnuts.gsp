@@ -7,7 +7,7 @@
         <g:layoutHead />
         <g:javascript library="prototype" />
     </head>
-    <body>
+    <body  class="yui-skin-sam">
     	<table cellpadding="0" cellspacing="0">
     		<tr>
     			<td colspan="3" style='height: 50px; background-color: #ffcccc;text-align:center; '>
