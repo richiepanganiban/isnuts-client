@@ -33,5 +33,16 @@
     			</td>
     		</tr>
     	</table>
+    	
+		<div style="visibility: hidden;">
+			<gui:dialog id="popupDialog"
+				title="Dialog"
+				modal="true"
+				form="false"
+				update="nothing"
+				triggers="[show:[type:'link', text:'', on:'click']]">
+				<div id="popupDialogContent" style='width: 700px; height: 400px; overflow-y: auto; overflow-x: auto;'></div>
+			</gui:dialog>	
+		</div>    	
     </body>
 </html>

@@ -20,4 +20,9 @@ class ServiceMenuController {
 		}
 		[featuredMobileServices:featuredMobileServices, customMobileServices:customMobileServices, categorizedServicesList:categorizedServicesList]
 	}
+	
+	def showService = {
+		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
+		[mobileServiceInstance:mobileServiceInstance]
+	}
 }

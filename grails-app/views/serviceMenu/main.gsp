@@ -23,6 +23,25 @@
 			color: #000;
 			font-weight: bold;
 		}
+		
+		.mobileServiceTitle {
+			width: 95%;
+			text-align: center;
+			font-size: 14px;
+			background-color:#EEE8AA;
+			color:#000;
+			font-weight: bold;
+			padding-top: 3px;
+			padding-bottom: 3px;
+			border: 1px solid #000;
+		}
+		
+		.mobileServiceDesc {
+			width: 95%;
+			border-left: 1px solid #000;
+			border-right: 1px solid #000;
+			border-bottom: 1px solid #000;
+		}
 	</style>
 </head>
 <body>
@@ -48,7 +67,12 @@
 	
 	<script>
 		function showService(mobileServiceInstanceId) {
-			alert(mobileServiceInstanceId);
+			document.getElementById('popupDialogContent').innerHTML = 'Loading...';
+			new Ajax.Updater("popupDialogContent",
+				"${resource(dir:'serviceMenu', file:'showService')}",
+				{method:'get', parameters: {mobileServiceInstanceId:mobileServiceInstanceId}, evalScripts: true}
+			);		
+			GRAILSUI.popupDialog.show();	
 		}
 	</script>
 </body>
