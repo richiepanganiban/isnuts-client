@@ -34,6 +34,7 @@
 			padding-top: 3px;
 			padding-bottom: 3px;
 			border: 1px solid #000;
+			clear: both;
 		}
 		
 		.mobileServiceDesc {
@@ -41,6 +42,23 @@
 			border-left: 1px solid #000;
 			border-right: 1px solid #000;
 			border-bottom: 1px solid #000;
+			clear: both;
+		}
+		
+		.button {
+			float: right;
+			margin-left: 5px;
+			margin-right: 5px;
+			font-size: 11px;
+			padding-left: 5px;
+			padding-right: 5px;
+			padding-top: 2px;
+			border: 1px solid #880000;
+			background-color: #ff0000;
+		}
+		
+		.button a {
+			color: #ccc;
 		}
 	</style>
 </head>
@@ -70,6 +88,15 @@
 			document.getElementById('popupDialogContent').innerHTML = 'Loading...';
 			new Ajax.Updater("popupDialogContent",
 				"${resource(dir:'serviceMenu', file:'showService')}",
+				{method:'get', parameters: {mobileServiceInstanceId:mobileServiceInstanceId}, evalScripts: true}
+			);		
+			GRAILSUI.popupDialog.show();	
+		}
+		
+		function invokeService(mobileServiceInstanceId) {
+			document.getElementById('popupDialogContent').innerHTML = 'Loading...';
+			new Ajax.Updater("popupDialogContent",
+				"${resource(dir:'serviceMenu', file:'invokeService')}",
 				{method:'get', parameters: {mobileServiceInstanceId:mobileServiceInstanceId}, evalScripts: true}
 			);		
 			GRAILSUI.popupDialog.show();	

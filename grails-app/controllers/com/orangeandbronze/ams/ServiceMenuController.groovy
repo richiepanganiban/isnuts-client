@@ -25,4 +25,27 @@ class ServiceMenuController {
 		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
 		[mobileServiceInstance:mobileServiceInstance]
 	}
+	
+	def invokeService = {
+		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
+		def invocationParameters = getInvocationParameters(mobileServiceInstance)
+		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters]
+	}
+	
+	def getInvocationParameters(mobileServiceInstance) {
+		def result = []
+		if (mobileServiceInstance.appendMobileToServiceNumber) {
+			result << [keywordItemId:0, label:'Enter 10 Digit Mobile Number', itemType:'MOBILE_NUMBER', value:'']
+		}
+		mobileServiceInstance.keywordItems.sort{it.id}.each {
+			def keywordItem = it
+			if (keywordItem.itemType in ['USER_INPUT', 'MOBILE_NUMBER']) {
+				result << [keywordItemId:keywordItem.id, label:keywordItem.label, itemType:keywordItem.itemType, value:'']
+			}
+		}
+		return result
+	}
 }
+
+
+
