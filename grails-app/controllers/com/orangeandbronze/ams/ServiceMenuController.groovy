@@ -35,15 +35,55 @@ class ServiceMenuController {
 	def getInvocationParameters(mobileServiceInstance) {
 		def result = []
 		if (mobileServiceInstance.appendMobileToServiceNumber) {
-			result << [keywordItemId:0, label:'Enter 10 Digit Mobile Number', itemType:'MOBILE_NUMBER', value:'']
+			def value = params['0'] in ['', null, 'null'] ? '' : params['0']
+			result << [keywordItemId:0, label:'Enter 10 Digit Mobile Number', itemType:'MOBILE_NUMBER', value:value]
 		}
 		mobileServiceInstance.keywordItems.sort{it.id}.each {
 			def keywordItem = it
+			def value = params["${keywordItem.id}"] in ['', null, 'null'] ? '' : params["${keywordItem.id}"]
 			if (keywordItem.itemType in ['USER_INPUT', 'MOBILE_NUMBER']) {
-				result << [keywordItemId:keywordItem.id, label:keywordItem.label, itemType:keywordItem.itemType, value:'']
+				result << [keywordItemId:keywordItem.id, label:keywordItem.label, itemType:keywordItem.itemType, value:value]
 			}
 		}
 		return result
+	}
+	
+	def doInvokeService = {
+		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
+		def invocationParameters = getInvocationParameters(mobileServiceInstance)
+		invocationParameters.each {
+			def invocationParameter = it
+			if (invocationParameter.value == '') {
+				flash.message = "Please fill up all fields"
+				render (view:'invokeService', model:[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters])
+				return
+			}
+		}
+		
+		String serviceNumber = mobileServiceInstance.serviceNumber
+		if (mobileServiceInstance.appendMobileToServiceNumber) {
+			serviceNumber = serviceNumber + invocationParameters.find {it.keywordItemId == 0}.value
+		}
+		
+		StringBuilder sb = new StringBuilder()
+		if (mobileServiceInstance.serviceType == 'SMS') {
+			mobileServiceInstance.keywordItems.sort{it.id}.each {
+				def keywordItem = it
+				if (keywordItem.itemType == 'SPACE') {
+					sb.append(" ");
+				} else if (keywordItem.itemType == 'LITERAL') {
+					sb.append(keywordItem.literalValue);
+				} else {
+					sb.append(invocationParameters.find {it.keywordItemId == keywordItem.id}.value);
+				}
+			}
+		}
+		
+		render "<div><b>${mobileServiceInstance.serviceType == 'CALL' ? 'RINGING':'SENDING SMS'}</b><div>"
+		render "<div><b>Number: </b>${serviceNumber}<div>"
+		if (mobileServiceInstance.serviceType == 'SMS') {
+			render "<div><b>Message: </b>${sb}<div>"
+		}
 	}
 }
 
