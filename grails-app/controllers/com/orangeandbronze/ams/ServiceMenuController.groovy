@@ -78,12 +78,9 @@ class ServiceMenuController {
 				}
 			}
 		}
+		def smsMessage = sb.toString()
 		
-		render "<div><b>${mobileServiceInstance.serviceType == 'CALL' ? 'RINGING':'SENDING SMS'}</b><div>"
-		render "<div><b>Number: </b>${serviceNumber}<div>"
-		if (mobileServiceInstance.serviceType == 'SMS') {
-			render "<div><b>Message: </b>${sb}<div>"
-		}
+		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters, serviceNumber:serviceNumber, smsMessage:smsMessage]
 	}
 }
 
