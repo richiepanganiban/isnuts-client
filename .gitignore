@@ -1,1 +1,2 @@
 *.class
+web-app/WEB-INF/classes/**
