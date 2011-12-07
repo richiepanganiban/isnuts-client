@@ -27,14 +27,6 @@ class ServiceMenuController {
 		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters]
 	}
 	
-	/*
-	def invokeService = {
-		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
-		def invocationParameters = getInvocationParameters(mobileServiceInstance)
-		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters]
-	}
-	*/
-	
 	def getInvocationParameters(mobileServiceInstance) {
 		def result = []
 		if (mobileServiceInstance.appendMobileToServiceNumber) {
