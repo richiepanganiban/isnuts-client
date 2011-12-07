@@ -122,6 +122,43 @@ class ServiceMenuController {
 		return result
 	}
 
+	def invokeCustomService = {
+		def customMobileServiceInstance = CustomMobileService.get(params.customMobileServiceInstanceId)
+		def mobileServiceInstance = customMobileServiceInstance.mobileServiceInstance
+		def invocationParameters = getCustomInvocationParameters(customMobileServiceInstance)
+
+		invocationParameters.each {
+			def invocationParameter = it
+			if (invocationParameter.value == '') {
+				flash.message = "Please fill up all fields"
+				render (view:'showCustomService', model:[customMobileServiceInstance:customMobileServiceInstance, invocationParameters:invocationParameters])
+				return
+			}
+		}
+		
+		String serviceNumber = mobileServiceInstance.serviceNumber
+		if (mobileServiceInstance.appendMobileToServiceNumber) {
+			serviceNumber = serviceNumber + invocationParameters.find {it.keywordItemId == 0}.value
+		}
+		
+		StringBuilder sb = new StringBuilder()
+		if (mobileServiceInstance.serviceType == 'SMS') {
+			mobileServiceInstance.keywordItems.sort{it.id}.each {
+				def keywordItem = it
+				if (keywordItem.itemType == 'SPACE') {
+					sb.append(" ");
+				} else if (keywordItem.itemType == 'LITERAL') {
+					sb.append(keywordItem.literalValue);
+				} else {
+					sb.append(invocationParameters.find {it.keywordItemId == keywordItem.id}.value);
+				}
+			}
+		}
+		def smsMessage = sb.toString()
+		
+		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters, serviceNumber:serviceNumber, smsMessage:smsMessage]
+
+	}
 }
 
 

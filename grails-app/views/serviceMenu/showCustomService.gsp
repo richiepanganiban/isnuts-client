@@ -14,7 +14,7 @@
 				</div>
 			</g:each>
 			<g:hiddenField name="customMobileServiceInstanceId" value="${customMobileServiceInstance.id}"/>
-			<g:submitToRemote url="[controller:'serviceMenu', action:'invokeService']" update="popupDialogContent" value="GO" class="button" />
+			<g:submitToRemote url="[controller:'serviceMenu', action:'invokeCustomService']" update="popupDialogContent" value="GO" class="button" />
 		</g:form>
 	</div>
 	
