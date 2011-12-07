@@ -71,7 +71,10 @@
 			</g:each>
 	    </gui:tab>
 	    <gui:tab label="Favorites">
-	    	${customMobileServices.size() }
+	    	<g:each in="${customMobileServices}" var="customMobileService">
+	    		<g:render template="/serviceMenu/customMobileServiceMenuItem" model="${[customMobileService:customMobileService]}"/>
+	    	</g:each>
+	    	
 	    </gui:tab>
 		<g:each in="${categorizedServicesList}" var="categorizedServices">
 		    <gui:tab label="${categorizedServices.categoryName }">
@@ -98,6 +101,15 @@
 			new Ajax.Updater("popupDialogContent",
 				"${resource(dir:'serviceMenu', file:'invokeService')}",
 				{method:'get', parameters: {mobileServiceInstanceId:mobileServiceInstanceId}, evalScripts: true}
+			);		
+			GRAILSUI.popupDialog.show();	
+		}
+		
+		function showCustomService(customMobileServiceInstanceId) {
+			document.getElementById('popupDialogContent').innerHTML = 'Loading...';
+			new Ajax.Updater("popupDialogContent",
+				"${resource(dir:'serviceMenu', file:'showCustomService')}",
+				{method:'get', parameters: {customMobileServiceInstanceId:customMobileServiceInstanceId}, evalScripts: true}
 			);		
 			GRAILSUI.popupDialog.show();	
 		}

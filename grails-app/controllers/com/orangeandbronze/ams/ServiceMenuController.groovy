@@ -101,7 +101,7 @@ class ServiceMenuController {
 				new CustomKeywordItemValue().save(valueForKeywordItem:keywordItem, value:value)
 			}
 		}
-		render "ok"
+		render "<script>window.location.reload()</script>"
 	}
 }
 
