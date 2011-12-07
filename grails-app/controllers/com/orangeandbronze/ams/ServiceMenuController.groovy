@@ -78,6 +78,12 @@ class ServiceMenuController {
 		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters, serviceNumber:serviceNumber, smsMessage:smsMessage]
 	}
 	
+	def createCustomService = {
+		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
+		def invocationParameters = getInvocationParameters(mobileServiceInstance)
+		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters]
+	}
+	
 	def saveInvokedService = {
 		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
 		def invocationParameters = getInvocationParameters(mobileServiceInstance)
@@ -95,7 +101,7 @@ class ServiceMenuController {
 		}
 		render "<script>window.location.reload()</script>"
 	}
-	
+
 	def showCustomService = {
 		def customMobileServiceInstance = CustomMobileService.get(params.customMobileServiceInstanceId)
 		def invocationParameters = getCustomInvocationParameters(customMobileServiceInstance)
@@ -169,10 +175,23 @@ class ServiceMenuController {
 			customMobileServiceInstance.appendedMobileNumber = invocationParameters.find {it.keywordItemId == 0}?.value
 			customMobileServiceInstance.save()
 		}
+		/*
 		customMobileServiceInstance.customKeywordItemValues.each {
 			def customKeywordItemValue = it
 			customKeywordItemValue.value = invocationParameters.find{it.keywordItemId == customKeywordItemValue.valueForKeywordItem.id}?.value
 			customKeywordItemValue.save()
+		}*/
+		invocationParameters.each {
+			def invocationParameter = it
+			if (it.keywordItemId != 0) {
+				def customKeywordItemValue = customMobileServiceInstance.customKeywordItemValues.find{it.valueForKeywordItem.id == invocationParameter.keywordItemId}
+				if (customKeywordItemValue != null) {
+					customKeywordItemValue.value = invocationParameter.value
+					customKeywordItemValue.save()
+				} else {
+					new CustomKeywordItemValue(customMobileServiceInstance:customMobileServiceInstance, valueForKeywordItem:KeywordItem.get(invocationParameter.keywordItemId), value:invocationParameter.value).save()
+				}
+			}
 		}
 		flash.message = "Changes Saved."
 		render (view:'showCustomService', model:[customMobileServiceInstance:customMobileServiceInstance, invocationParameters:invocationParameters])
