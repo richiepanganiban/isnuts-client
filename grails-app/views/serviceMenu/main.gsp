@@ -96,15 +96,6 @@
 			GRAILSUI.popupDialog.show();	
 		}
 		
-		function invokeService(mobileServiceInstanceId) {
-			document.getElementById('popupDialogContent').innerHTML = 'Loading...';
-			new Ajax.Updater("popupDialogContent",
-				"${resource(dir:'serviceMenu', file:'invokeService')}",
-				{method:'get', parameters: {mobileServiceInstanceId:mobileServiceInstanceId}, evalScripts: true}
-			);		
-			GRAILSUI.popupDialog.show();	
-		}
-		
 		function showCustomService(customMobileServiceInstanceId) {
 			document.getElementById('popupDialogContent').innerHTML = 'Loading...';
 			new Ajax.Updater("popupDialogContent",

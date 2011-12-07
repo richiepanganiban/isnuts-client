@@ -23,14 +23,17 @@ class ServiceMenuController {
 	
 	def showService = {
 		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
-		[mobileServiceInstance:mobileServiceInstance]
+		def invocationParameters = getInvocationParameters(mobileServiceInstance)
+		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters]
 	}
 	
+	/*
 	def invokeService = {
 		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
 		def invocationParameters = getInvocationParameters(mobileServiceInstance)
 		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters]
 	}
+	*/
 	
 	def getInvocationParameters(mobileServiceInstance) {
 		def result = []
@@ -48,14 +51,14 @@ class ServiceMenuController {
 		return result
 	}
 	
-	def doInvokeService = {
+	def invokeService = {
 		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
 		def invocationParameters = getInvocationParameters(mobileServiceInstance)
 		invocationParameters.each {
 			def invocationParameter = it
 			if (invocationParameter.value == '') {
 				flash.message = "Please fill up all fields"
-				render (view:'invokeService', model:[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters])
+				render (view:'showService', model:[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters])
 				return
 			}
 		}
