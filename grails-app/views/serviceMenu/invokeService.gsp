@@ -23,7 +23,7 @@
 				<input type="hidden" name="${invocationParameter.keywordItemId}" value="${invocationParameter.value}"/>
 			</g:each>
 			<g:hiddenField name="mobileServiceInstanceId" value="${mobileServiceInstance.id}"/>
-			<g:submitToRemote url="[controller:'serviceMenu', action:'saveInvokedService']" update="popupDialogContent" value="GO" class="button" />
+			<g:submitToRemote url="[controller:'serviceMenu', action:'saveInvokedService']" update="popupDialogContent" value="Save" class="button" />
 		</g:form>	
 	</div>
 </div>

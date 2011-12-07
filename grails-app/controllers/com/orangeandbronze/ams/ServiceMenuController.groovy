@@ -83,21 +83,45 @@ class ServiceMenuController {
 		def invocationParameters = getInvocationParameters(mobileServiceInstance)
 		
 		def customMobileServiceName = params.customMobileServiceName in ['', null, 'null'] ? mobileServiceInstance.name : params.customMobileServiceName
-		String serviceNumber = mobileServiceInstance.serviceNumber
-		if (mobileServiceInstance.appendMobileToServiceNumber) {
-			serviceNumber = serviceNumber + invocationParameters.find {it.keywordItemId == 0}.value
-		}
+		String appendedMobileNumber = mobileServiceInstance.appendMobileToServiceNumber ? invocationParameters.find {it.keywordItemId == 0}.value : ''
 		
-		def customMobileServiceInstance = new CustomMobileService(name:customMobileServiceName, mobileServiceInstance:mobileServiceInstance, finalServiceNumber:serviceNumber).save(flush:true)
+		def customMobileServiceInstance = new CustomMobileService(name:customMobileServiceName, mobileServiceInstance:mobileServiceInstance, appendedMobileNumber:appendedMobileNumber).save(flush:true)
 		mobileServiceInstance.keywordItems.sort{it.id}.each {
 			def keywordItem = it
 			if (keywordItem.itemType in ['USER_INPUT', 'MOBILE_NUMBER']) {
 				def value = invocationParameters.find {it.keywordItemId == keywordItem.id}.value
-				new CustomKeywordItemValue().save(valueForKeywordItem:keywordItem, value:value)
+				new CustomKeywordItemValue(customMobileServiceInstance:customMobileServiceInstance, valueForKeywordItem:keywordItem, value:value).save()
 			}
 		}
 		render "<script>window.location.reload()</script>"
 	}
+	
+	def showCustomService = {
+		def customMobileServiceInstance = CustomMobileService.get(params.customMobileServiceInstanceId)
+		def invocationParameters = getCustomInvocationParameters(customMobileServiceInstance)
+		
+		[customMobileServiceInstance:customMobileServiceInstance, invocationParameters:invocationParameters]
+	}
+	
+	def getCustomInvocationParameters(customMobileServiceInstance) {
+		def result = []
+		def mobileServiceInstance = customMobileServiceInstance.mobileServiceInstance
+		if (mobileServiceInstance.appendMobileToServiceNumber) {
+			def value = params['0'] in ['', null, 'null'] ? customMobileServiceInstance.appendedMobileNumber : params['0']
+			result << [keywordItemId:0, label:'Enter 10 Digit Mobile Number', itemType:'MOBILE_NUMBER', value:value]
+		}
+		mobileServiceInstance.keywordItems.sort{it.id}.each {
+			def keywordItem = it
+			if (keywordItem.itemType in ['USER_INPUT', 'MOBILE_NUMBER']) {
+				def value = params["${keywordItem.id}"] in ['', null, 'null'] ?
+				  customMobileServiceInstance.customKeywordItemValues.find{it.valueForKeywordItem.id == keywordItem.id}?.value :
+				  params["${keywordItem.id}"]
+				result << [keywordItemId:keywordItem.id, label:keywordItem.label, itemType:keywordItem.itemType, value:value]
+			}
+		}
+		return result
+	}
+
 }
 
 
