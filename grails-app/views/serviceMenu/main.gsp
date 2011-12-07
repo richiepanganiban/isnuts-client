@@ -71,7 +71,7 @@
 			</g:each>
 	    </gui:tab>
 	    <gui:tab label="Favorites">
-	    	Fav
+	    	${customMobileServices.size() }
 	    </gui:tab>
 		<g:each in="${categorizedServicesList}" var="categorizedServices">
 		    <gui:tab label="${categorizedServices.categoryName }">

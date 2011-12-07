@@ -3,7 +3,7 @@ package com.orangeandbronze.ams
 class CustomMobileService {
 	String name
 	MobileService mobileServiceInstance
-	String appendedMobileNumber
+	String finalServiceNumber
 	static hasMany = [customKeywordItemValues:CustomKeywordItemValue]
 	
 	static constraints = {

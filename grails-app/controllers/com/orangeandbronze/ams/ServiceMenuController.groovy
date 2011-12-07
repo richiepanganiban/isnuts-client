@@ -82,6 +82,27 @@ class ServiceMenuController {
 		
 		[mobileServiceInstance:mobileServiceInstance, invocationParameters:invocationParameters, serviceNumber:serviceNumber, smsMessage:smsMessage]
 	}
+	
+	def saveInvokedService = {
+		def mobileServiceInstance = MobileService.get(params.mobileServiceInstanceId)
+		def invocationParameters = getInvocationParameters(mobileServiceInstance)
+		
+		def customMobileServiceName = params.customMobileServiceName in ['', null, 'null'] ? mobileServiceInstance.name : params.customMobileServiceName
+		String serviceNumber = mobileServiceInstance.serviceNumber
+		if (mobileServiceInstance.appendMobileToServiceNumber) {
+			serviceNumber = serviceNumber + invocationParameters.find {it.keywordItemId == 0}.value
+		}
+		
+		def customMobileServiceInstance = new CustomMobileService(name:customMobileServiceName, mobileServiceInstance:mobileServiceInstance, finalServiceNumber:serviceNumber).save(flush:true)
+		mobileServiceInstance.keywordItems.sort{it.id}.each {
+			def keywordItem = it
+			if (keywordItem.itemType in ['USER_INPUT', 'MOBILE_NUMBER']) {
+				def value = invocationParameters.find {it.keywordItemId == keywordItem.id}.value
+				new CustomKeywordItemValue().save(valueForKeywordItem:keywordItem, value:value)
+			}
+		}
+		render "ok"
+	}
 }
 
 
